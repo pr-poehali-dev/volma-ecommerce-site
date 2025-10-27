@@ -701,7 +701,49 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="bg-gray-900 text-white py-12">
+      <nav className="bg-white border-t border-gray-200 sticky bottom-0 z-40 shadow-lg">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-around py-3">
+            <a 
+              href="#hero" 
+              className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary transition-colors group"
+            >
+              <Icon name="Home" size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium">Главная</span>
+            </a>
+            <a 
+              href="#categories" 
+              className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary transition-colors group"
+            >
+              <Icon name="LayoutGrid" size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium">Категории</span>
+            </a>
+            <a 
+              href="#calculator" 
+              className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary transition-colors group"
+            >
+              <Icon name="Calculator" size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium">Калькулятор</span>
+            </a>
+            <a 
+              href="#news" 
+              className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary transition-colors group"
+            >
+              <Icon name="Newspaper" size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium">Новости</span>
+            </a>
+            <a 
+              href="#contact" 
+              className="flex flex-col items-center gap-1 text-gray-600 hover:text-primary transition-colors group"
+            >
+              <Icon name="Phone" size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="text-xs font-medium">Контакты</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <footer className="bg-gray-900 text-white py-12 pb-20 md:pb-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -717,19 +759,19 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Продукция</h3>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Клеи</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Штукатурки</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Шпатлёвки</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Растворы</a></li>
+                <li><a href="#categories" className="hover:text-white transition-colors">Клеи</a></li>
+                <li><a href="#categories" className="hover:text-white transition-colors">Штукатурки</a></li>
+                <li><a href="#categories" className="hover:text-white transition-colors">Шпатлёвки</a></li>
+                <li><a href="#categories" className="hover:text-white transition-colors">Растворы</a></li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold mb-4">Компания</h3>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">О нас</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Новости</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Вакансии</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Контакты</a></li>
+                <li><a href="#hero" className="hover:text-white transition-colors">О нас</a></li>
+                <li><a href="#news" className="hover:text-white transition-colors">Новости</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">Вакансии</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">Контакты</a></li>
               </ul>
             </div>
             <div>
