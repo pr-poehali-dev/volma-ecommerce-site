@@ -33,16 +33,32 @@ const Index = () => {
   const [cartOpen, setCartOpen] = useState(false);
 
   const allProducts = [
-    { id: 1, name: 'ВОЛМА-Слой', category: 'plaster', price: 450, priceStr: '450 ₽', weight: '30 кг' },
-    { id: 2, name: 'ВОЛМА-Холст', category: 'plaster', price: 380, priceStr: '380 ₽', weight: '30 кг' },
-    { id: 3, name: 'ВОЛМА-Пласт', category: 'plaster', price: 420, priceStr: '420 ₽', weight: '30 кг' },
-    { id: 4, name: 'ВОЛМА-Керамик', category: 'glue', price: 320, priceStr: '320 ₽', weight: '25 кг' },
-    { id: 5, name: 'ВОЛМА-Блок', category: 'glue', price: 280, priceStr: '280 ₽', weight: '25 кг' },
-    { id: 6, name: 'ВОЛМА-Акваслой', category: 'putty', price: 520, priceStr: '520 ₽', weight: '20 кг' },
-    { id: 7, name: 'ВОЛМА-Шов', category: 'putty', price: 350, priceStr: '350 ₽', weight: '25 кг' },
-    { id: 8, name: 'ВОЛМА-Монтаж', category: 'mortar', price: 290, priceStr: '290 ₽', weight: '30 кг' },
-    { id: 9, name: 'ВОЛМА-Люкс', category: 'putty', price: 480, priceStr: '480 ₽', weight: '20 кг' },
-    { id: 10, name: 'ВОЛМА-Фасад', category: 'plaster', price: 550, priceStr: '550 ₽', weight: '25 кг' },
+    // Штукатурки
+    { id: 1, name: 'ВОЛМА-Слой', category: 'plaster', price: 450, priceStr: '450 ₽', weight: '30 кг', description: 'Гипсовая штукатурка для внутренних работ' },
+    { id: 2, name: 'ВОЛМА-Холст', category: 'plaster', price: 380, priceStr: '380 ₽', weight: '30 кг', description: 'Штукатурка повышенной прочности' },
+    { id: 3, name: 'ВОЛМА-Пласт', category: 'plaster', price: 420, priceStr: '420 ₽', weight: '30 кг', description: 'Универсальная гипсовая штукатурка' },
+    { id: 10, name: 'ВОЛМА-Фасад', category: 'plaster', price: 550, priceStr: '550 ₽', weight: '25 кг', description: 'Цементная штукатурка для фасадов' },
+    { id: 11, name: 'ВОЛМА-Акватинк', category: 'plaster', price: 490, priceStr: '490 ₽', weight: '30 кг', description: 'Влагостойкая штукатурка' },
+    { id: 12, name: 'ВОЛМА-Гипс Актив', category: 'plaster', price: 410, priceStr: '410 ₽', weight: '30 кг', description: 'Быстротвердеющая гипсовая штукатурка' },
+    
+    // Клеи
+    { id: 4, name: 'ВОЛМА-Керамик', category: 'glue', price: 320, priceStr: '320 ₽', weight: '25 кг', description: 'Клей для керамической плитки' },
+    { id: 5, name: 'ВОЛМА-Блок', category: 'glue', price: 280, priceStr: '280 ₽', weight: '25 кг', description: 'Клей для газобетонных блоков' },
+    { id: 13, name: 'ВОЛМА-Керамик Плюс', category: 'glue', price: 380, priceStr: '380 ₽', weight: '25 кг', description: 'Усиленный плиточный клей' },
+    { id: 14, name: 'ВОЛМА-Флекс', category: 'glue', price: 450, priceStr: '450 ₽', weight: '25 кг', description: 'Эластичный клей для плитки' },
+    { id: 15, name: 'ВОЛМА-Аква Керамик', category: 'glue', price: 340, priceStr: '340 ₽', weight: '25 кг', description: 'Влагостойкий клей для влажных помещений' },
+    
+    // Шпатлёвки
+    { id: 6, name: 'ВОЛМА-Акваслой', category: 'putty', price: 520, priceStr: '520 ₽', weight: '20 кг', description: 'Влагостойкая полимерная шпатлёвка' },
+    { id: 7, name: 'ВОЛМА-Шов', category: 'putty', price: 350, priceStr: '350 ₽', weight: '25 кг', description: 'Шпатлёвка для швов ГКЛ' },
+    { id: 9, name: 'ВОЛМА-Люкс', category: 'putty', price: 480, priceStr: '480 ₽', weight: '20 кг', description: 'Финишная шпатлёвка премиум-класса' },
+    { id: 16, name: 'ВОЛМА-Стандарт', category: 'putty', price: 320, priceStr: '320 ₽', weight: '20 кг', description: 'Универсальная шпатлёвка' },
+    { id: 17, name: 'ВОЛМА-Финиш', category: 'putty', price: 390, priceStr: '390 ₽', weight: '20 кг', description: 'Финишная шпатлёвка' },
+    
+    // Растворы
+    { id: 8, name: 'ВОЛМА-Монтаж', category: 'mortar', price: 290, priceStr: '290 ₽', weight: '30 кг', description: 'Монтажный гипсовый раствор' },
+    { id: 18, name: 'ВОЛМА-Кладка', category: 'mortar', price: 260, priceStr: '260 ₽', weight: '30 кг', description: 'Кладочный цементный раствор' },
+    { id: 19, name: 'ВОЛМА-Ремстройка', category: 'mortar', price: 310, priceStr: '310 ₽', weight: '25 кг', description: 'Ремонтная смесь быстрого твердения' },
   ];
 
   const addToCart = (product: typeof allProducts[0]) => {
@@ -142,16 +158,22 @@ const Index = () => {
     if (!areaNum || !heightNum) return null;
     
     const totalArea = areaNum;
-    const consumption = 8.5;
+    const consumption = 8.5; // кг/м² при слое 10мм
     const layerThickness = heightNum;
     const totalKg = totalArea * consumption * (layerThickness / 10);
     const bags30kg = Math.ceil(totalKg / 30);
     const bags25kg = Math.ceil(totalKg / 25);
+    const bags20kg = Math.ceil(totalKg / 20);
+    const estimatedCost30kg = bags30kg * 450; // средняя цена
+    const estimatedCost25kg = bags25kg * 380;
     
     return {
       totalKg: totalKg.toFixed(1),
       bags30kg,
-      bags25kg
+      bags25kg,
+      bags20kg,
+      estimatedCost30kg: estimatedCost30kg.toLocaleString('ru-RU'),
+      estimatedCost25kg: estimatedCost25kg.toLocaleString('ru-RU')
     };
   };
 
@@ -559,20 +581,44 @@ const Index = () => {
                             <span className="text-gray-700">Требуется материала:</span>
                             <span className="font-bold text-xl text-primary">{result.totalKg} кг</span>
                           </div>
-                          <div className="h-px bg-gray-300" />
-                          <div className="flex justify-between items-center text-lg">
-                            <span className="text-gray-700">Мешков по 30 кг:</span>
-                            <span className="font-bold text-xl">{result.bags30kg} шт</span>
+                          <Separator />
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-700">Мешков по 30 кг:</span>
+                              <span className="font-bold text-lg">{result.bags30kg} шт</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm text-gray-600">
+                              <span>Примерная стоимость:</span>
+                              <span className="font-semibold">≈ {result.estimatedCost30kg} ₽</span>
+                            </div>
                           </div>
-                          <div className="flex justify-between items-center text-lg">
-                            <span className="text-gray-700">Мешков по 25 кг:</span>
-                            <span className="font-bold text-xl">{result.bags25kg} шт</span>
+                          <Separator />
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-700">Мешков по 25 кг:</span>
+                              <span className="font-bold text-lg">{result.bags25kg} шт</span>
+                            </div>
+                            <div className="flex justify-between items-center text-sm text-gray-600">
+                              <span>Примерная стоимость:</span>
+                              <span className="font-semibold">≈ {result.estimatedCost25kg} ₽</span>
+                            </div>
+                          </div>
+                          <Separator />
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-gray-700">Мешков по 20 кг:</span>
+                              <span className="font-bold text-lg">{result.bags20kg} шт</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="mt-6 pt-4 border-t border-gray-300">
-                          <p className="text-sm text-gray-600">
+                        <div className="mt-6 pt-4 border-t border-primary/20">
+                          <p className="text-sm text-gray-600 mb-3">
                             * Расчёт приблизительный. Расход: 8,5 кг/м² при слое 10 мм
                           </p>
+                          <Button className="w-full" size="lg">
+                            <Icon name="ShoppingCart" size={18} className="mr-2" />
+                            Добавить в корзину рекомендованное количество
+                          </Button>
                         </div>
                       </div>
                     )}
