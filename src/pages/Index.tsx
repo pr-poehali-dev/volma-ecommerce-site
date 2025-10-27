@@ -4,12 +4,37 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [area, setArea] = useState('');
   const [height, setHeight] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+
+  const allProducts = [
+    { id: 1, name: 'ВОЛМА-Слой', category: 'plaster', price: '450 ₽', weight: '30 кг' },
+    { id: 2, name: 'ВОЛМА-Холст', category: 'plaster', price: '380 ₽', weight: '30 кг' },
+    { id: 3, name: 'ВОЛМА-Пласт', category: 'plaster', price: '420 ₽', weight: '30 кг' },
+    { id: 4, name: 'ВОЛМА-Керамик', category: 'glue', price: '320 ₽', weight: '25 кг' },
+    { id: 5, name: 'ВОЛМА-Блок', category: 'glue', price: '280 ₽', weight: '25 кг' },
+    { id: 6, name: 'ВОЛМА-Акваслой', category: 'putty', price: '520 ₽', weight: '20 кг' },
+    { id: 7, name: 'ВОЛМА-Шов', category: 'putty', price: '350 ₽', weight: '25 кг' },
+    { id: 8, name: 'ВОЛМА-Монтаж', category: 'mortar', price: '290 ₽', weight: '30 кг' },
+    { id: 9, name: 'ВОЛМА-Люкс', category: 'putty', price: '480 ₽', weight: '20 кг' },
+    { id: 10, name: 'ВОЛМА-Фасад', category: 'plaster', price: '550 ₽', weight: '25 кг' },
+  ];
+
+  const filteredProducts = allProducts.filter(product => 
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const categories = [
     {
@@ -85,7 +110,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <img 
               src="https://cdn.poehali.dev/files/1c4da8c0-6931-4304-9f2d-fe205f8a8406.png" 
@@ -93,6 +118,39 @@ const Index = () => {
               className="h-12"
             />
           </div>
+          
+          <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-[300px] justify-start text-left font-normal hidden lg:flex">
+                <Icon name="Search" size={16} className="mr-2" />
+                <span className="text-gray-500">Поиск товаров...</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0" align="start">
+              <Command>
+                <CommandInput 
+                  placeholder="Поиск товаров..." 
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+                <CommandList>
+                  <CommandEmpty>Товары не найдены</CommandEmpty>
+                  <CommandGroup heading="Результаты">
+                    {filteredProducts.slice(0, 5).map((product) => (
+                      <CommandItem key={product.id}>
+                        <Icon name="Package" size={16} className="mr-2" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{product.name}</span>
+                          <span className="text-xs text-gray-500">{product.price} • {product.weight}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+
           <nav className="hidden md:flex items-center gap-6">
             <a href="#categories" className="text-gray-700 hover:text-primary transition-colors font-medium">
               Каталог
@@ -103,14 +161,103 @@ const Index = () => {
             <a href="#news" className="text-gray-700 hover:text-primary transition-colors font-medium">
               Новости
             </a>
-            <a href="#contact" className="text-gray-700 hover:text-primary transition-colors font-medium">
-              Контакты
-            </a>
           </nav>
-          <Button className="bg-secondary hover:bg-secondary/90">
-            <Icon name="Phone" size={16} className="mr-2" />
-            8-800-100-20-30
-          </Button>
+
+          <div className="flex items-center gap-2">
+            {user ? (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <Icon name="User" size={16} />
+                    <span className="hidden lg:inline">{user.name}</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Личный кабинет</DialogTitle>
+                    <DialogDescription>Управление профилем и заказами</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Имя</Label>
+                      <Input value={user.name} readOnly />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Email</Label>
+                      <Input value={user.email} readOnly />
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => setUser(null)}
+                    >
+                      Выйти
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" className="gap-2">
+                    <Icon name="User" size={16} />
+                    <span className="hidden lg:inline">Войти</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{isLogin ? 'Вход' : 'Регистрация'}</DialogTitle>
+                    <DialogDescription>
+                      {isLogin ? 'Войдите в личный кабинет' : 'Создайте новый аккаунт'}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form 
+                    className="space-y-4 py-4"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const formData = new FormData(e.currentTarget);
+                      setUser({
+                        name: formData.get('name') as string || 'Пользователь',
+                        email: formData.get('email') as string
+                      });
+                      setLoginOpen(false);
+                    }}
+                  >
+                    {!isLogin && (
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Имя</Label>
+                        <Input id="name" name="name" placeholder="Иван Иванов" required />
+                      </div>
+                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input id="email" name="email" type="email" placeholder="ivan@example.com" required />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Пароль</Label>
+                      <Input id="password" name="password" type="password" required />
+                    </div>
+                    <Button type="submit" className="w-full">
+                      {isLogin ? 'Войти' : 'Зарегистрироваться'}
+                    </Button>
+                    <Button 
+                      type="button"
+                      variant="link" 
+                      className="w-full"
+                      onClick={() => setIsLogin(!isLogin)}
+                    >
+                      {isLogin ? 'Нет аккаунта? Зарегистрируйтесь' : 'Уже есть аккаунт? Войдите'}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            )}
+            
+            <Button className="bg-secondary hover:bg-secondary/90 hidden lg:flex">
+              <Icon name="Phone" size={16} className="mr-2" />
+              8-800-100-20-30
+            </Button>
+          </div>
         </div>
       </header>
 
