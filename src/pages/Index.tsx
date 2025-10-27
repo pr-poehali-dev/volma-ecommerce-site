@@ -7,7 +7,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
+
+type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  weight: string;
+  quantity: number;
+};
 
 const Index = () => {
   const [area, setArea] = useState('');
@@ -18,19 +29,58 @@ const Index = () => {
   const [loginOpen, setLoginOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
 
   const allProducts = [
-    { id: 1, name: 'ВОЛМА-Слой', category: 'plaster', price: '450 ₽', weight: '30 кг' },
-    { id: 2, name: 'ВОЛМА-Холст', category: 'plaster', price: '380 ₽', weight: '30 кг' },
-    { id: 3, name: 'ВОЛМА-Пласт', category: 'plaster', price: '420 ₽', weight: '30 кг' },
-    { id: 4, name: 'ВОЛМА-Керамик', category: 'glue', price: '320 ₽', weight: '25 кг' },
-    { id: 5, name: 'ВОЛМА-Блок', category: 'glue', price: '280 ₽', weight: '25 кг' },
-    { id: 6, name: 'ВОЛМА-Акваслой', category: 'putty', price: '520 ₽', weight: '20 кг' },
-    { id: 7, name: 'ВОЛМА-Шов', category: 'putty', price: '350 ₽', weight: '25 кг' },
-    { id: 8, name: 'ВОЛМА-Монтаж', category: 'mortar', price: '290 ₽', weight: '30 кг' },
-    { id: 9, name: 'ВОЛМА-Люкс', category: 'putty', price: '480 ₽', weight: '20 кг' },
-    { id: 10, name: 'ВОЛМА-Фасад', category: 'plaster', price: '550 ₽', weight: '25 кг' },
+    { id: 1, name: 'ВОЛМА-Слой', category: 'plaster', price: 450, priceStr: '450 ₽', weight: '30 кг' },
+    { id: 2, name: 'ВОЛМА-Холст', category: 'plaster', price: 380, priceStr: '380 ₽', weight: '30 кг' },
+    { id: 3, name: 'ВОЛМА-Пласт', category: 'plaster', price: 420, priceStr: '420 ₽', weight: '30 кг' },
+    { id: 4, name: 'ВОЛМА-Керамик', category: 'glue', price: 320, priceStr: '320 ₽', weight: '25 кг' },
+    { id: 5, name: 'ВОЛМА-Блок', category: 'glue', price: 280, priceStr: '280 ₽', weight: '25 кг' },
+    { id: 6, name: 'ВОЛМА-Акваслой', category: 'putty', price: 520, priceStr: '520 ₽', weight: '20 кг' },
+    { id: 7, name: 'ВОЛМА-Шов', category: 'putty', price: 350, priceStr: '350 ₽', weight: '25 кг' },
+    { id: 8, name: 'ВОЛМА-Монтаж', category: 'mortar', price: 290, priceStr: '290 ₽', weight: '30 кг' },
+    { id: 9, name: 'ВОЛМА-Люкс', category: 'putty', price: 480, priceStr: '480 ₽', weight: '20 кг' },
+    { id: 10, name: 'ВОЛМА-Фасад', category: 'plaster', price: 550, priceStr: '550 ₽', weight: '25 кг' },
   ];
+
+  const addToCart = (product: typeof allProducts[0]) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => 
+          item.id === product.id 
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { 
+        id: product.id, 
+        name: product.name, 
+        price: product.price,
+        weight: product.weight,
+        quantity: 1 
+      }];
+    });
+  };
+
+  const removeFromCart = (productId: number) => {
+    setCart(prev => prev.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId: number, newQuantity: number) => {
+    if (newQuantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    setCart(prev => prev.map(item => 
+      item.id === productId ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const filteredProducts = allProducts.filter(product => 
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -137,12 +187,19 @@ const Index = () => {
                   <CommandEmpty>Товары не найдены</CommandEmpty>
                   <CommandGroup heading="Результаты">
                     {filteredProducts.slice(0, 5).map((product) => (
-                      <CommandItem key={product.id}>
+                      <CommandItem 
+                        key={product.id}
+                        onSelect={() => {
+                          addToCart(product);
+                          setSearchOpen(false);
+                        }}
+                      >
                         <Icon name="Package" size={16} className="mr-2" />
-                        <div className="flex flex-col">
+                        <div className="flex flex-col flex-1">
                           <span className="font-medium">{product.name}</span>
-                          <span className="text-xs text-gray-500">{product.price} • {product.weight}</span>
+                          <span className="text-xs text-gray-500">{product.priceStr} • {product.weight}</span>
                         </div>
+                        <Icon name="Plus" size={16} className="text-primary" />
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -252,6 +309,105 @@ const Index = () => {
                 </DialogContent>
               </Dialog>
             )}
+
+            <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="relative gap-2">
+                  <Icon name="ShoppingCart" size={16} />
+                  {cartItemsCount > 0 && (
+                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
+                      {cartItemsCount}
+                    </Badge>
+                  )}
+                  <span className="hidden lg:inline">Корзина</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-lg">
+                <SheetHeader>
+                  <SheetTitle>Корзина покупок</SheetTitle>
+                  <SheetDescription>
+                    {cartItemsCount > 0 ? `Товаров: ${cartItemsCount}` : 'Корзина пуста'}
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-col h-full py-6">
+                  {cart.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center">
+                      <Icon name="ShoppingCart" size={64} className="text-gray-300 mb-4" />
+                      <p className="text-gray-500 mb-2">Ваша корзина пуста</p>
+                      <p className="text-sm text-gray-400">Добавьте товары из каталога</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex-1 overflow-auto space-y-4">
+                        {cart.map((item) => (
+                          <Card key={item.id}>
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-3">
+                                <div className="flex-1">
+                                  <h4 className="font-semibold">{item.name}</h4>
+                                  <p className="text-sm text-gray-500">{item.weight}</p>
+                                  <p className="text-primary font-semibold mt-1">{item.price} ₽</p>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeFromCart(item.id)}
+                                >
+                                  <Icon name="Trash2" size={16} className="text-red-500" />
+                                </Button>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                >
+                                  <Icon name="Minus" size={14} />
+                                </Button>
+                                <Input
+                                  type="number"
+                                  value={item.quantity}
+                                  onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 0)}
+                                  className="w-16 text-center"
+                                  min="1"
+                                />
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                >
+                                  <Icon name="Plus" size={14} />
+                                </Button>
+                                <span className="ml-auto font-semibold">
+                                  {item.price * item.quantity} ₽
+                                </span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      <div className="border-t pt-4 space-y-4">
+                        <div className="flex justify-between items-center text-lg font-semibold">
+                          <span>Итого:</span>
+                          <span className="text-2xl text-primary">{cartTotal} ₽</span>
+                        </div>
+                        <Button className="w-full" size="lg">
+                          <Icon name="CreditCard" size={20} className="mr-2" />
+                          Оформить заказ
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => setCart([])}
+                        >
+                          Очистить корзину
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
             
             <Button className="bg-secondary hover:bg-secondary/90 hidden lg:flex">
               <Icon name="Phone" size={16} className="mr-2" />
@@ -316,9 +472,25 @@ const Index = () => {
                     {category.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-3">
+                  <div className="grid grid-cols-1 gap-2 text-sm">
+                    {allProducts.filter(p => p.category === category.id).slice(0, 2).map(product => (
+                      <div key={product.id} className="flex items-center justify-between text-gray-600">
+                        <span className="truncate flex-1">{product.name}</span>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => addToCart(product)}
+                          className="h-7 w-7 p-0"
+                        >
+                          <Icon name="Plus" size={14} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <Separator />
                   <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-colors">
-                    Перейти в каталог
+                    Все {category.title.toLowerCase()}
                     <Icon name="ChevronRight" size={16} className="ml-2" />
                   </Button>
                 </CardContent>
